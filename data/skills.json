@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-20T10:48:46+00:00",
+ "generatedAt": "2026-10-20T10:52:24+00:00",
  "departments": {
   "sales": {
    "name": "営業本部",
@@ -201,8 +201,8 @@
    "title": "報告スライド作成",
    "summary": "報告内容のメモから、社内テンプレートに沿った報告用スライドの構成と各ページの文章を作る。",
    "summarySource": "catalog",
-   "updated": "2026-07-09",
-   "changes": 1,
+   "updated": "2026-10-20",
+   "changes": 2,
    "readme": "# 報告スライド作成 (slide-maker)\n週次報告や会議資料の内容メモから、社内テンプレートに合わせたスライドを作ります。\n## できること\n- 結論→根拠→次のアクションの順で構成\n- 1枚あたりの文字量を調整\n- 社内テンプレート（PowerPoint）に流し込み",
    "repo": "dx-skills-public",
    "url": "https://github.com/SeijiDoi545/dx-skills-public/tree/main/skills/slide-maker"
