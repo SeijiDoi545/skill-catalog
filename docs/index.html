@@ -125,9 +125,9 @@ form.q:focus-within{border-color:var(--accent)}
 .pop-list .track i{display:block;height:100%;background:var(--accent);border-radius:5px}
 .pop-list .n{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right;font-size:.9rem}
 @media (max-width:560px){.pop-list li{grid-template-columns:20px minmax(0,1fr) 3.5em;row-gap:4px}.pop-list .rk{grid-row:1}.pop-list .nm{grid-row:1;grid-column:2}.pop-list .n{grid-row:1;grid-column:3}.pop-list .track{grid-row:2;grid-column:2/4}}
-td.opens{white-space:nowrap;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
-td.opens .mini{display:inline-block;vertical-align:middle;width:60px;height:6px;background:var(--sunk);border-radius:3px;overflow:hidden;margin-right:8px}
-td.opens .mini i{display:block;height:100%;background:var(--accent)}
+td.chg{white-space:nowrap;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+td.chg .mini{display:inline-block;vertical-align:middle;width:60px;height:6px;background:var(--sunk);border-radius:3px;overflow:hidden;margin-right:8px}
+td.chg .mini i{display:block;height:100%;background:var(--accent)}
 .hit .opn{font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums}
 .tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
 table{width:100%;border-collapse:collapse;min-width:1000px}
@@ -242,18 +242,18 @@ footer{border-top:1px solid var(--line);padding-block:20px;font-size:.8rem;color
   <p class="lead">各部署の <code class="id">*-skills-public</code> リポジトリに登録されたスキルです。行をクリックするとREADMEを確認できます。概要欄は登録者が記載しています。</p>
   <p class="note" id="genAt"></p>
   <div class="pop">
-    <div class="pop-head"><h3>よく開かれているスキル</h3><span class="note" id="popScope"></span></div>
+    <div class="pop-head"><h3>よく変更されているスキル</h3><span class="note" id="popScope"></span></div>
     <ol class="pop-list" id="popList"></ol>
     <p class="note" id="popNote"></p>
   </div>
   <div class="toolbar">
     <div class="chips" id="deptFilter" role="group" aria-label="部署で絞り込み"></div>
-    <div class="chips" id="sortSel" role="group" aria-label="並び順"><span>並び順</span><button type="button" class="chip" data-s="opens" aria-pressed="true">開かれた回数順</button><button type="button" class="chip" data-s="dept" aria-pressed="false">部署順</button></div>
+    <div class="chips" id="sortSel" role="group" aria-label="並び順"><span>並び順</span><button type="button" class="chip" data-s="changes" aria-pressed="true">変更された回数順</button><button type="button" class="chip" data-s="dept" aria-pressed="false">部署順</button></div>
     <span class="note" id="count"></span>
   </div>
   <div class="tbl-wrap">
     <table>
-      <thead><tr><th style="width:24px"></th><th>スキル</th><th>部署</th><th>概要</th><th>概要の出所</th><th>更新日</th><th>GitHubで開かれた回数</th><th>リポジトリ</th></tr></thead>
+      <thead><tr><th style="width:24px"></th><th>スキル</th><th>部署</th><th>概要</th><th>概要の出所</th><th>更新日</th><th>GitHubで変更された回数</th><th>リポジトリ</th></tr></thead>
       <tbody id="tbody"></tbody>
     </table>
   </div>
@@ -276,36 +276,19 @@ const esc = t => String(t).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">"
 const deptTag = d => `<span class="dept ${DEPTS[d].cls}">${DEPTS[d].name}</span>`;
 const aiSummaries = {};
 
-/* ---------- popularity: times a "GitHubで開く" link was clicked ---------- */
-// Demo baseline so the ranking has shape before anyone clicks. Shown on the page as sample values.
-const SAMPLE_OPENS = {"proposal-drafter":128,"meeting-minutes-crm":96,"competitor-brief":41,"quote-checker":57,
-  "jd-writer":33,"interview-question-gen":22,"onboarding-guide":74,"policy-qa":61,
-  "invoice-reader":112,"expense-audit":88,"monthly-variance":45,"budget-template":12,
-  "excel-to-dashboard":143,"sql-helper":69,"doc-translator":101,"slide-maker":79};
-const realOpens = {};
-const opens = id => (SAMPLE_OPENS[id] || 0) + (realOpens[id] || 0);
-let sortSel = "opens";
+/* ---------- activity: commits into skills/<id>/ (counted by scripts/collect.py) ---------- */
+const changes = id => (byId[id] && byId[id].changes) || 0;
+const byChanges = (a,b) => changes(b.id) - changes(a.id) || String(b.updated).localeCompare(String(a.updated));
+let sortSel = "changes";
 const openRows = new Set();
-function onOpensChanged(){
-  renderTable(); renderPop();
-  document.querySelectorAll("[data-opens]").forEach(el => { el.textContent = `GitHubで開かれた回数 ${opens(el.dataset.opens)}`; });
-}
-const OPENS_SCOPE = "このブラウザでのクリック";
-const OPEN_KEY = "skillcat.opens";
-try { Object.assign(realOpens, JSON.parse(localStorage.getItem(OPEN_KEY) || "{}")); } catch {}
-function recordOpen(id){
-  realOpens[id] = (realOpens[id] || 0) + 1;
-  try { localStorage.setItem(OPEN_KEY, JSON.stringify(realOpens)); } catch {}
-  onOpensChanged();
-}
 
 /* ---------- catalog table ---------- */
 let deptSel = "all";
 const tbody = document.getElementById("tbody");
 function renderTable(){
   const rows = SKILLS.filter(s => deptSel === "all" || s.dept === deptSel);
-  if (sortSel === "opens") rows.sort((a,b) => opens(b.id) - opens(a.id));
-  const maxO = Math.max(1, ...SKILLS.map(s => opens(s.id)));
+  if (sortSel === "changes") rows.sort(byChanges);
+  const maxC = Math.max(1, ...SKILLS.map(s => changes(s.id)));
   document.getElementById("count").textContent = `${rows.length}件のスキル`;
   tbody.innerHTML = rows.map(s => {
     const ai = aiSummaries[s.id];
@@ -316,21 +299,21 @@ function renderTable(){
       <td class="sum">${esc(ai || s.summary)}</td>
       <td>${ai ? '<span class="src ai">自動要約</span>' : s.summarySource === "readme" ? '<span class="src ai">READMEから抽出</span>' : '<span class="src">人手</span>'}</td>
       <td class="meta">${s.updated}</td>
-      <td class="opens"><span class="mini" aria-hidden="true"><i style="width:${Math.round(100*opens(s.id)/maxO)}%"></i></span>${opens(s.id)}回</td>
-      <td><a class="repo" data-open="${s.id}" href="${s.url}" target="_blank" rel="noopener">${s.repo}/${s.id} ↗</a></td>
+      <td class="chg"><span class="mini" aria-hidden="true"><i style="width:${Math.round(100*changes(s.id)/maxC)}%"></i></span>${changes(s.id)}回</td>
+      <td><a class="repo" href="${s.url}" target="_blank" rel="noopener">${s.repo}/${s.id} ↗</a></td>
     </tr>`;
   }).join("");
   tbody.querySelectorAll("tr.row").forEach(tr => { if (openRows.has(tr.dataset.id)) toggleRow(tr, true); });
 }
 function renderPop(){
-  const list = SKILLS.filter(s => deptSel === "all" || s.dept === deptSel).sort((a,b) => opens(b.id) - opens(a.id)).slice(0,5);
-  const max = Math.max(1, ...list.map(s => opens(s.id)));
+  const list = SKILLS.filter(s => deptSel === "all" || s.dept === deptSel).sort(byChanges).slice(0,5);
+  const max = Math.max(1, ...list.map(s => changes(s.id)));
   document.getElementById("popScope").textContent = deptSel === "all" ? "全部署・上位5件" : `${DEPTS[deptSel].name}・上位5件`;
   document.getElementById("popList").innerHTML = list.map((s,i) => `<li><span class="rk">${i+1}</span>
     <span class="nm"><b>${esc(s.title)}</b>${deptTag(s.dept)}</span>
-    <span class="track" aria-hidden="true"><i style="width:${Math.round(100*opens(s.id)/max)}%"></i></span>
-    <span class="n">${opens(s.id)}回</span></li>`).join("");
-  document.getElementById("popNote").textContent = `回数は「GitHubで開く」とリポジトリのリンクが押された回数です。初期値はデモ用のサンプル値で、押すと${OPENS_SCOPE}が加算されます。`;
+    <span class="track" aria-hidden="true"><i style="width:${Math.round(100*changes(s.id)/max)}%"></i></span>
+    <span class="n">${changes(s.id)}回</span></li>`).join("");
+  document.getElementById("popNote").textContent = "回数は、GitHub上でそのスキルのフォルダ（README.md・SKILL.mdなど）に入ったコミットの数です。最初の追加も1回と数えます。一覧を作り直すたびに数え直しています。";
 }
 function toggleRow(tr, restoring){
   const next = tr.nextElementSibling;
@@ -359,9 +342,6 @@ ss.addEventListener("click", e => {
   ss.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
   renderTable();
 });
-const countOpen = e => { const a = e.target.closest("a[data-open]"); if (a && (e.type === "click" || e.button === 1)) recordOpen(a.dataset.open); };
-document.addEventListener("click", countOpen);
-document.addEventListener("auxclick", countOpen);
 renderTable(); renderPop();
 
 /* ---------- search engines: Claude API / in-browser vectors / simple ---------- */
@@ -487,10 +467,10 @@ function renderHits(list, note){
     return `<article class="hit"><div class="rank">${i+1}</div>
       <div class="body"><div class="t"><b>${esc(s.title)}</b>${deptTag(s.dept)}<span class="id">${s.id}</span></div>
       <p>${esc(aiSummaries[s.id] || s.summary)}</p><p class="why">${esc(r.reason)}</p></div>
-      <div class="side"><div class="meter" aria-hidden="true"><i style="width:${r.score}%"></i></div><span class="score">関連度 ${r.score}</span><span class="opn" data-opens="${s.id}">GitHubで開かれた回数 ${opens(s.id)}</span>
-      <a class="repo gh-open" data-open="${s.id}" href="${s.url}" target="_blank" rel="noopener">GitHubで開く ↗</a>
+      <div class="side"><div class="meter" aria-hidden="true"><i style="width:${r.score}%"></i></div><span class="score">関連度 ${r.score}</span><span class="opn">GitHubで変更された回数 ${changes(s.id)}</span>
+      <a class="repo gh-open" href="${s.url}" target="_blank" rel="noopener">GitHubで開く ↗</a>
       <button type="button" class="repo-toggle" data-id="${s.id}" aria-expanded="false"><span class="caret">▶</span> ${s.repo}/${s.id}</button></div>
-      <div class="hit-readme" hidden><p class="readme-h">README.md</p><pre class="readme">${esc(s.readme)}</pre><a class="repo" data-open="${s.id}" href="${s.url}" target="_blank" rel="noopener">GitHubで開く ↗</a></div></article>`;
+      <div class="hit-readme" hidden><p class="readme-h">README.md</p><pre class="readme">${esc(s.readme)}</pre><a class="repo" href="${s.url}" target="_blank" rel="noopener">GitHubで開く ↗</a></div></article>`;
   }).join("");
 }
 let busy = false;
