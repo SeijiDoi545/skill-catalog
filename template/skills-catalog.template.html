@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>全社スキルカタログ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Zen+Kaku+Gothic+New:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: intranet portal page — slim top bar, search first, catalog table, then "how it works" sections in one 1120px column */
+:root{
+  --bg:#f4f6f5; --surface:#ffffff; --sunk:#eaeeec; --fg:#18211e; --muted:#5b6964; --line:#d5dcd9;
+  --accent:#1d6b57; --accent-ink:#ffffff; --accent-soft:#dcefe8;
+  --warn:#9a5a00; --warn-soft:#fbefd9; --off:#8a9590;
+  --d-sales:#2f5fa8; --d-hr:#a2457a; --d-fin:#7a6512; --d-dx:#1d6b57;
+  --f-display:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --f-body:"BIZ UDPGothic","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+  --r:8px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111715; --surface:#18201d; --sunk:#0d1311; --fg:#e4ebe8; --muted:#9aa8a2; --line:#2c3833;
+  --accent:#4fbf9d; --accent-ink:#06231a; --accent-soft:#183a30;
+  --warn:#f0b35a; --warn-soft:#3a2a12; --off:#6c7873;
+  --d-sales:#7ea6e6; --d-hr:#e08ab9; --d-fin:#d6bd5c; --d-dx:#4fbf9d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111715; --surface:#18201d; --sunk:#0d1311; --fg:#e4ebe8; --muted:#9aa8a2; --line:#2c3833;
+  --accent:#4fbf9d; --accent-ink:#06231a; --accent-soft:#183a30;
+  --warn:#f0b35a; --warn-soft:#3a2a12; --off:#6c7873;
+  --d-sales:#7ea6e6; --d-hr:#e08ab9; --d-fin:#d6bd5c; --d-dx:#4fbf9d; color-scheme:dark}
+
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.7}
+.settings{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px}
+.settings .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.settings label{font-size:.8rem;font-weight:700;color:var(--muted);min-width:7em}
+.settings input{flex:1;min-width:0;font:inherit;font-size:.9rem;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+.settings hr{border:0;border-top:1px solid var(--line);margin:4px 0;width:100%}
+.linkbtn{font:inherit;font-size:.8rem;background:none;border:0;color:var(--accent);cursor:pointer;padding:0;text-decoration:underline}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.35;margin:0}
+h2{font-size:1.35rem}
+h3{font-size:1.02rem}
+p{margin:0}
+.eyebrow{font-size:.75rem;letter-spacing:.08em;color:var(--muted);font-weight:700}
+
+/* top bar */
+.bar{background:var(--surface);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;gap:16px;padding-block:10px;flex-wrap:wrap}
+.crumb{font-size:.82rem;color:var(--muted)}
+.crumb b{color:var(--fg)}
+.bar nav{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
+.bar nav a{font-size:.85rem;text-decoration:none;color:var(--muted);padding:4px 10px;border-radius:6px}
+.bar nav a:hover{background:var(--sunk);color:var(--fg)}
+.demo-flag{font-size:.72rem;font-weight:700;color:var(--warn);background:var(--warn-soft);padding:2px 8px;border-radius:99px}
+
+main{display:flex;flex-direction:column;gap:56px;padding-block:32px 72px}
+section{display:flex;flex-direction:column;gap:16px;scroll-margin-top:16px}
+.lead{color:var(--muted);max-width:68ch}
+
+/* search */
+.search-head{display:flex;flex-direction:column;gap:8px}
+.search-head h1{font-size:clamp(1.5rem,3.2vw,2rem)}
+form.q{display:flex;gap:8px;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:6px;align-items:stretch}
+form.q:focus-within{border-color:var(--accent)}
+#q{flex:1;min-width:0;border:0;background:transparent;color:var(--fg);font:inherit;font-size:1.05rem;padding:10px 12px;outline:none}
+.btn{font:inherit;font-weight:700;border:0;border-radius:8px;padding:10px 18px;cursor:pointer;background:var(--accent);color:var(--accent-ink);white-space:nowrap}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chips span{font-size:.8rem;color:var(--muted)}
+.chip{font:inherit;font-size:.82rem;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:99px;padding:4px 12px;cursor:pointer}
+.chip:hover{border-color:var(--accent)}
+.chip .cnt{margin-left:6px;font-family:var(--f-mono);font-size:.75rem;font-variant-numeric:tabular-nums;color:var(--muted)}
+.chip[aria-pressed="true"] .cnt{color:inherit;opacity:.75}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.mode{font-size:.8rem;color:var(--muted);display:flex;gap:8px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--off);flex:none}
+.dot.on{background:var(--accent)}
+
+#results{display:flex;flex-direction:column;gap:10px}
+.repo-toggle{font-family:var(--f-mono);font-size:.78rem;background:none;border:0;padding:0;color:var(--accent);cursor:pointer;text-align:right;overflow-wrap:anywhere}
+.repo-toggle:hover{text-decoration:underline}
+.gh-open{font-family:var(--f-body);font-size:.8rem;font-weight:700;text-decoration:none;border:1px solid var(--line);border-radius:6px;padding:3px 10px;background:var(--surface)}
+.gh-open:hover{border-color:var(--accent)}
+.repo-toggle[aria-expanded="true"] .caret{transform:rotate(90deg)}
+.hit-readme{grid-column:1/-1;background:var(--sunk);border-radius:6px;padding:14px 16px;margin-top:8px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.hit-readme .readme{overflow-x:auto}
+.hit-readme .repo{align-self:flex-start}
+#results:empty{display:none}
+.status{font-size:.9rem;color:var(--muted);padding:12px 0}
+.status.err{color:var(--warn)}
+.hit{display:grid;grid-template-columns:40px 1fr auto;gap:4px 16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;align-items:start}
+.hit .rank{font-family:var(--f-mono);font-weight:600;color:var(--muted);font-size:1.1rem;padding-top:2px}
+.hit .body{min-width:0;display:flex;flex-direction:column;gap:4px}
+.hit .t{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.hit .t b{font-family:var(--f-display);font-size:1.05rem}
+.hit .why{font-size:.9rem;color:var(--muted)}
+.hit .why::before{content:"関連する理由：";font-weight:700;color:var(--fg)}
+.hit .side{display:flex;flex-direction:column;gap:6px;align-items:flex-end;min-width:110px}
+.meter{width:110px;height:6px;background:var(--sunk);border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent)}
+.score{font-family:var(--f-mono);font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums}
+@media (max-width:640px){.hit{grid-template-columns:28px 1fr}.hit .side{grid-column:2;align-items:flex-start;flex-direction:row;gap:12px;flex-wrap:wrap}}
+
+.dept{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;white-space:nowrap;color:var(--dc)}
+.dept::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--dc)}
+.d-sales{--dc:var(--d-sales)}.d-hr{--dc:var(--d-hr)}.d-fin{--dc:var(--d-fin)}.d-dx{--dc:var(--d-dx)}
+.id{font-family:var(--f-mono);font-size:.78rem;color:var(--muted)}
+
+/* table */
+.toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.pop{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.pop-head{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.pop-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.pop-list li{display:grid;grid-template-columns:24px minmax(0,15em) minmax(0,1fr) 4.5em;gap:12px;align-items:center}
+.pop-list .rk{font-family:var(--f-mono);font-weight:600;color:var(--muted)}
+.pop-list .nm{min-width:0;display:flex;flex-direction:column;line-height:1.35}
+.pop-list .nm b{font-family:var(--f-display);font-size:.92rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pop-list .track{height:10px;background:var(--sunk);border-radius:5px;overflow:hidden}
+.pop-list .track i{display:block;height:100%;background:var(--accent);border-radius:5px}
+.pop-list .n{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right;font-size:.9rem}
+@media (max-width:560px){.pop-list li{grid-template-columns:20px minmax(0,1fr) 3.5em;row-gap:4px}.pop-list .rk{grid-row:1}.pop-list .nm{grid-row:1;grid-column:2}.pop-list .n{grid-row:1;grid-column:3}.pop-list .track{grid-row:2;grid-column:2/4}}
+td.opens{white-space:nowrap;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+td.opens .mini{display:inline-block;vertical-align:middle;width:60px;height:6px;background:var(--sunk);border-radius:3px;overflow:hidden;margin-right:8px}
+td.opens .mini i{display:block;height:100%;background:var(--accent)}
+.hit .opn{font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+table{width:100%;border-collapse:collapse;min-width:1000px}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.75rem;letter-spacing:.06em;color:var(--muted);background:var(--sunk);font-weight:700;white-space:nowrap}
+tbody tr.row{cursor:pointer}
+tbody tr.row:hover{background:var(--sunk)}
+tbody tr:last-child td{border-bottom:0}
+td.name{min-width:11em}
+td.name b{font-family:var(--f-display);display:block}
+td.sum{min-width:16em;max-width:44ch}
+td.meta{font-size:.82rem;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.src{font-size:.72rem;font-weight:700;padding:1px 8px;border-radius:99px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.src.ai{background:var(--accent-soft);color:var(--accent)}
+.repo{font-family:var(--f-mono);font-size:.8rem;white-space:nowrap}
+.caret{display:inline-block;transition:transform .15s;color:var(--muted)}
+tr.open .caret{transform:rotate(90deg)}
+tr.detail td{background:var(--sunk);padding:16px 20px}
+.readme{font-family:var(--f-mono);font-size:.8rem;line-height:1.65;white-space:pre-wrap;margin:0;color:var(--fg);max-width:90ch}
+.readme-h{font-size:.75rem;color:var(--muted);margin-bottom:6px;font-weight:700;letter-spacing:.06em}
+
+/* structure */
+.orgbox{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:16px}
+.orghead{font-family:var(--f-mono);font-size:.85rem;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.depts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:860px){.depts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:460px){.depts{grid-template-columns:1fr}}
+.dcol{display:flex;flex-direction:column;gap:8px;border-top:3px solid var(--dc);padding-top:10px}
+.dcol h3{font-size:.92rem}
+.rp{border:1px solid var(--line);border-radius:6px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.rp code{font-family:var(--f-mono);font-size:.74rem;overflow-wrap:anywhere}
+.rp small{font-size:.74rem;color:var(--muted)}
+.rp.pub{border-color:var(--accent);background:var(--accent-soft)}
+.rp.int{border-style:dashed;color:var(--muted)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+
+/* pipeline */
+.flow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;counter-reset:s}
+@media (max-width:960px){.flow{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:520px){.flow{grid-template-columns:1fr}}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:6px;counter-increment:s;min-width:0}
+.step::before{content:counter(s);font-family:var(--f-mono);font-weight:600;font-size:.8rem;color:var(--accent-ink);background:var(--accent);width:22px;height:22px;border-radius:50%;display:grid;place-items:center}
+.step b{font-family:var(--f-display);font-size:.92rem}
+.step p{font-size:.8rem;color:var(--muted);line-height:1.6}
+.step code{font-family:var(--f-mono);font-size:.72rem;color:var(--fg)}
+.two{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px}
+@media (max-width:860px){.two{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+pre.code{margin:0;background:var(--sunk);border-radius:6px;padding:14px;overflow-x:auto;font-family:var(--f-mono);font-size:.76rem;line-height:1.6}
+select{font:inherit;font-size:.9rem;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);max-width:100%}
+.cmp{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+.cmp div{border-left:3px solid var(--line);padding-left:12px}
+.cmp div.ai{border-color:var(--accent)}
+.cmp .lbl{font-size:.75rem;font-weight:700;color:var(--muted);letter-spacing:.04em}
+.note{font-size:.8rem;color:var(--muted)}
+ul.plain{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;font-size:.9rem}
+footer{border-top:1px solid var(--line);padding-block:20px;font-size:.8rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <div class="crumb">全社ポータル ／ ナレッジ ／ <b>スキルカタログ</b></div>
+    <span class="demo-flag">デモ（架空データ）</span>
+    <nav aria-label="ページ内">
+      <a href="#search">探す</a><a href="#catalog">一覧</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section id="search" aria-labelledby="h-search">
+  <div class="search-head">
+    <p class="eyebrow">SKILL SEARCH</p>
+    <h1 id="h-search">やりたいことから、使えるスキルを探す</h1>
+    <p class="lead">「〜したい」「〜ができるもの」と文章で入力してください。各部署の全社公開リポジトリにあるREADMEの内容を読み、意味の近いスキルを関連度の高い順に表示します。キーワードが一致しなくても見つかります。</p>
+  </div>
+  <form class="q" id="qform" role="search">
+    <label for="q" class="eyebrow" hidden>検索する内容</label>
+    <input id="q" type="search" autocomplete="off" placeholder="例：お客さんとの打ち合わせ内容を整理して営業記録に残したい">
+    <button class="btn" id="go" type="submit">探す</button>
+  </form>
+  <div class="chips" id="examples">
+    <span>入力例</span>
+    <button type="button" class="chip">数字の多い資料をグラフで見やすくしたい</button>
+    <button type="button" class="chip">新しく入った人に何を案内すればいいか知りたい</button>
+    <button type="button" class="chip">領収書や請求書の処理を楽にしたい</button>
+    <button type="button" class="chip">英語の契約書を日本語で読みたい</button>
+  </div>
+  <div class="mode" id="mode"><span class="dot" id="modeDot"></span><span id="modeText">簡易検索</span><button type="button" class="linkbtn" id="setBtn" aria-expanded="false">検索方式の設定</button></div>
+  <div class="settings" id="settings" hidden>
+    <p class="note"><b>方式1：Claudeで意味検索</b>（関連する理由も表示します）。AnthropicのAPIキーを入れてください。キーはこのブラウザの中だけに保存され、Anthropic以外には送られません。</p>
+    <div class="row"><label for="apiKey">APIキー</label><input id="apiKey" type="password" autocomplete="off" placeholder="sk-ant-..."></div>
+    <div class="row"><label for="model">モデル</label><input id="model" type="text" value="claude-haiku-4-5"></div>
+    <div class="row"><button type="button" class="btn" id="saveKey">保存してClaudeを使う</button><button type="button" class="btn ghost" id="clearKey">キーを削除</button></div>
+    <hr>
+    <p class="note"><b>方式2：ブラウザ内ベクトル検索</b>（APIキー不要）。多言語の埋め込みモデル（約120MB）を初回にダウンロードし、READMEと入力文をベクトルにして近い順に並べます。理由の表示はできません。</p>
+    <div class="row"><button type="button" class="btn ghost" id="loadVec">ベクトル検索を有効にする</button><span class="note" id="vecStatus"></span></div>
+  </div>
+  <div id="results" aria-live="polite"></div>
+</section>
+
+<section id="catalog" aria-labelledby="h-cat">
+  <div>
+    <p class="eyebrow">CATALOG</p>
+    <h2 id="h-cat">全社公開スキル一覧</h2>
+  </div>
+  <p class="lead">各部署の <code class="id">*-skills-public</code> リポジトリに登録されたスキルです。行をクリックするとREADMEを確認できます。概要欄は登録者が記載しています。</p>
+  <p class="note" id="genAt"></p>
+  <div class="pop">
+    <div class="pop-head"><h3>よく開かれているスキル</h3><span class="note" id="popScope"></span></div>
+    <ol class="pop-list" id="popList"></ol>
+    <p class="note" id="popNote"></p>
+  </div>
+  <div class="toolbar">
+    <div class="chips" id="deptFilter" role="group" aria-label="部署で絞り込み"></div>
+    <div class="chips" id="sortSel" role="group" aria-label="並び順"><span>並び順</span><button type="button" class="chip" data-s="opens" aria-pressed="true">開かれた回数順</button><button type="button" class="chip" data-s="dept" aria-pressed="false">部署順</button></div>
+    <span class="note" id="count"></span>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th style="width:24px"></th><th>スキル</th><th>部署</th><th>概要</th><th>概要の出所</th><th>更新日</th><th>GitHubで開かれた回数</th><th>リポジトリ</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+<footer><div class="wrap">このページはGitHub Actionsで各部署の全社公開リポジトリから自動生成しています。部署とスキルはデモ用の架空のものです。</div></footer>
+
+<script>
+// Filled in by scripts/render.py from data/skills.json. Do not edit by hand.
+const CATALOG = /*__CATALOG_DATA__*/null || {generatedAt: "", departments: {}, skills: []};
+const DEPTS = CATALOG.departments;
+const SKILLS = CATALOG.skills;
+if (CATALOG.generatedAt) {
+  const d = new Date(CATALOG.generatedAt);
+  document.getElementById("genAt").textContent = `一覧の最終更新：${d.toLocaleString("ja-JP", {timeZone: "Asia/Tokyo"})}（GitHub Actionsで自動生成）`;
+}
+const byId = Object.fromEntries(SKILLS.map(s => [s.id, s]));
+const esc = t => String(t).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const deptTag = d => `<span class="dept ${DEPTS[d].cls}">${DEPTS[d].name}</span>`;
+const aiSummaries = {};
+
+/* ---------- popularity: times a "GitHubで開く" link was clicked ---------- */
+// Demo baseline so the ranking has shape before anyone clicks. Shown on the page as sample values.
+const SAMPLE_OPENS = {"proposal-drafter":128,"meeting-minutes-crm":96,"competitor-brief":41,"quote-checker":57,
+  "jd-writer":33,"interview-question-gen":22,"onboarding-guide":74,"policy-qa":61,
+  "invoice-reader":112,"expense-audit":88,"monthly-variance":45,"budget-template":12,
+  "excel-to-dashboard":143,"sql-helper":69,"doc-translator":101,"slide-maker":79};
+const realOpens = {};
+const opens = id => (SAMPLE_OPENS[id] || 0) + (realOpens[id] || 0);
+let sortSel = "opens";
+const openRows = new Set();
+function onOpensChanged(){
+  renderTable(); renderPop();
+  document.querySelectorAll("[data-opens]").forEach(el => { el.textContent = `GitHubで開かれた回数 ${opens(el.dataset.opens)}`; });
+}
+const OPENS_SCOPE = "このブラウザでのクリック";
+const OPEN_KEY = "skillcat.opens";
+try { Object.assign(realOpens, JSON.parse(localStorage.getItem(OPEN_KEY) || "{}")); } catch {}
+function recordOpen(id){
+  realOpens[id] = (realOpens[id] || 0) + 1;
+  try { localStorage.setItem(OPEN_KEY, JSON.stringify(realOpens)); } catch {}
+  onOpensChanged();
+}
+
+/* ---------- catalog table ---------- */
+let deptSel = "all";
+const tbody = document.getElementById("tbody");
+function renderTable(){
+  const rows = SKILLS.filter(s => deptSel === "all" || s.dept === deptSel);
+  if (sortSel === "opens") rows.sort((a,b) => opens(b.id) - opens(a.id));
+  const maxO = Math.max(1, ...SKILLS.map(s => opens(s.id)));
+  document.getElementById("count").textContent = `${rows.length}件のスキル`;
+  tbody.innerHTML = rows.map(s => {
+    const ai = aiSummaries[s.id];
+    return `<tr class="row" data-id="${s.id}" tabindex="0" aria-expanded="false">
+      <td><span class="caret">▶</span></td>
+      <td class="name"><b>${esc(s.title)}</b><span class="id">${s.id}</span></td>
+      <td>${deptTag(s.dept)}</td>
+      <td class="sum">${esc(ai || s.summary)}</td>
+      <td>${ai ? '<span class="src ai">自動要約</span>' : s.summarySource === "readme" ? '<span class="src ai">READMEから抽出</span>' : '<span class="src">人手</span>'}</td>
+      <td class="meta">${s.updated}</td>
+      <td class="opens"><span class="mini" aria-hidden="true"><i style="width:${Math.round(100*opens(s.id)/maxO)}%"></i></span>${opens(s.id)}回</td>
+      <td><a class="repo" data-open="${s.id}" href="${s.url}" target="_blank" rel="noopener">${s.repo}/${s.id} ↗</a></td>
+    </tr>`;
+  }).join("");
+  tbody.querySelectorAll("tr.row").forEach(tr => { if (openRows.has(tr.dataset.id)) toggleRow(tr, true); });
+}
+function renderPop(){
+  const list = SKILLS.filter(s => deptSel === "all" || s.dept === deptSel).sort((a,b) => opens(b.id) - opens(a.id)).slice(0,5);
+  const max = Math.max(1, ...list.map(s => opens(s.id)));
+  document.getElementById("popScope").textContent = deptSel === "all" ? "全部署・上位5件" : `${DEPTS[deptSel].name}・上位5件`;
+  document.getElementById("popList").innerHTML = list.map((s,i) => `<li><span class="rk">${i+1}</span>
+    <span class="nm"><b>${esc(s.title)}</b>${deptTag(s.dept)}</span>
+    <span class="track" aria-hidden="true"><i style="width:${Math.round(100*opens(s.id)/max)}%"></i></span>
+    <span class="n">${opens(s.id)}回</span></li>`).join("");
+  document.getElementById("popNote").textContent = `回数は「GitHubで開く」とリポジトリのリンクが押された回数です。初期値はデモ用のサンプル値で、押すと${OPENS_SCOPE}が加算されます。`;
+}
+function toggleRow(tr, restoring){
+  const next = tr.nextElementSibling;
+  if (!restoring && next && next.classList.contains("detail")) { next.remove(); tr.classList.remove("open"); tr.setAttribute("aria-expanded","false"); openRows.delete(tr.dataset.id); return; }
+  openRows.add(tr.dataset.id);
+  const s = byId[tr.dataset.id];
+  const d = document.createElement("tr"); d.className = "detail";
+  d.innerHTML = `<td></td><td colspan="7"><p class="readme-h">README.md</p><pre class="readme">${esc(s.readme)}</pre></td>`;
+  tr.after(d); tr.classList.add("open"); tr.setAttribute("aria-expanded","true");
+}
+tbody.addEventListener("click", e => { if (e.target.closest("a")) return; const tr = e.target.closest("tr.row"); if (tr) toggleRow(tr); });
+tbody.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches("tr.row")) { e.preventDefault(); toggleRow(e.target); } });
+const df = document.getElementById("deptFilter");
+df.innerHTML = [`<button type="button" class="chip" data-d="all" aria-pressed="true">すべて<span class="cnt">${SKILLS.length}</span></button>`]
+  .concat(Object.entries(DEPTS).map(([k,v]) => `<button type="button" class="chip" data-d="${k}" aria-pressed="false">${v.name}<span class="cnt">${SKILLS.filter(s => s.dept === k).length}</span></button>`)).join("");
+df.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  deptSel = b.dataset.d;
+  df.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  renderTable(); renderPop();
+});
+const ss = document.getElementById("sortSel");
+ss.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  sortSel = b.dataset.s;
+  ss.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  renderTable();
+});
+const countOpen = e => { const a = e.target.closest("a[data-open]"); if (a && (e.type === "click" || e.button === 1)) recordOpen(a.dataset.open); };
+document.addEventListener("click", countOpen);
+document.addEventListener("auxclick", countOpen);
+renderTable(); renderPop();
+
+/* ---------- search engines: Claude API / in-browser vectors / simple ---------- */
+const store = {
+  get(k){ try { return localStorage.getItem(k) || ""; } catch { return ""; } },
+  set(k,v){ try { v ? localStorage.setItem(k,v) : localStorage.removeItem(k); } catch {} },
+};
+let apiKey = store.get("skillcat.apiKey");
+let modelId = store.get("skillcat.model") || "claude-haiku-4-5";
+let embedder = null, skillVecs = null;
+const modeDot = document.getElementById("modeDot"), modeText = document.getElementById("modeText");
+const results = document.getElementById("results");
+const engine = () => apiKey ? "claude" : (skillVecs ? "vector" : "simple");
+function setMode(){
+  const e = engine();
+  modeDot.classList.toggle("on", e !== "simple");
+  modeText.textContent = e === "claude" ? `意味検索（Claude・${modelId}）：READMEを読んで関連度と理由を判定します`
+    : e === "vector" ? "意味検索（ブラウザ内ベクトル検索）：READMEと入力文の意味の近さで並べます"
+    : "簡易検索：文字の一致で並べています。意味検索は「検索方式の設定」から有効にできます";
+}
+
+async function askClaude(prompt, maxTokens){
+  const r = await fetch("https://api.anthropic.com/v1/messages", {
+    method:"POST",
+    headers:{
+      "content-type":"application/json",
+      "x-api-key":apiKey,
+      "anthropic-version":"2023-06-01",
+      "anthropic-dangerous-direct-browser-access":"true",
+    },
+    body: JSON.stringify({model:modelId, max_tokens:maxTokens || 1500, messages:[{role:"user", content:prompt}]}),
+  });
+  const body = await r.json().catch(() => ({}));
+  if (!r.ok) { const err = new Error(body?.error?.message || `HTTP ${r.status}`); err.status = r.status; throw err; }
+  return (body.content || []).filter(c => c.type === "text").map(c => c.text).join("");
+}
+function parseJsonArray(text){
+  try { return JSON.parse(text); } catch {}
+  const m = text.match(/\[[\s\S]*\]/); if (m) { try { return JSON.parse(m[0]); } catch {} }
+  return [];
+}
+function apiErrMsg(e){
+  if (e.status === 401) return "APIキーが正しくありません。設定を確認してください。";
+  if (e.status === 404) return `モデル「${modelId}」が見つかりません。設定でモデル名を確認してください。`;
+  if (e.status === 429) return "APIの利用上限に達しました。少し時間をおいてから試してください。";
+  if (e instanceof TypeError) return "Anthropic APIに接続できませんでした。ネットワークやプロキシの設定を確認してください。";
+  return "Claudeでの処理に失敗しました（" + e.message + "）。";
+}
+
+function buildPrompt(q){
+  const docs = SKILLS.map(s => `<skill id="${s.id}" dept="${DEPTS[s.dept].name}">\n${s.readme}\n</skill>`).join("\n\n");
+  return `あなたは社内のスキル（AIアシスタント用の業務手順パッケージ）カタログの検索エンジンです。
+社員の「やりたいこと」に対して、下のスキルのREADMEを読み、役に立つスキルを関連度の高い順に選んでください。
+キーワードの一致ではなく、目的や作業内容が意味的に近いかで判断します。言い換え・上位概念・関連業務も考慮してください。
+
+# 社員の入力
+${q}
+
+# スキル一覧
+${docs}
+
+# 出力
+関連度が40以上のものだけ、最大5件。JSON配列のみを返し、前後に説明文を付けないでください。
+[{"id":"スキルid","score":0から100の整数,"reason":"入力のどの部分にREADMEのどの機能が応えるかを日本語40〜70字で"}]
+該当がなければ [] を返してください。`;
+}
+const bigrams = t => { const s = t.toLowerCase().replace(/[\s、。・「」（）()\-:#\n]/g,""); const out = new Set(); for (let i=0;i<s.length-1;i++) out.add(s.slice(i,i+2)); return out; };
+function localSearch(q){
+  const qb = bigrams(q);
+  return SKILLS.map(s => {
+    const sb = bigrams(s.title + s.summary + s.readme); let hit = 0; qb.forEach(b => { if (sb.has(b)) hit++; });
+    return {id:s.id, score: Math.round(100 * hit / Math.max(qb.size,1)), reason:"入力と同じ言葉がREADMEに含まれています（簡易検索）"};
+  }).filter(r => r.score >= 15).sort((a,b) => b.score - a.score).slice(0,5);
+}
+
+/* in-browser embeddings (multilingual-e5-small via transformers.js) */
+const vecStatus = document.getElementById("vecStatus"), loadVec = document.getElementById("loadVec");
+async function enableVectors(){
+  loadVec.disabled = true; vecStatus.textContent = "ライブラリを読み込んでいます…";
+  try {
+    const { pipeline, env } = await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.2");
+    env.allowLocalModels = false;
+    let lastPct = -1;
+    embedder = await pipeline("feature-extraction", "Xenova/multilingual-e5-small", {
+      dtype:"q8",
+      progress_callback: p => {
+        if (p.status === "progress" && p.file && p.file.endsWith(".onnx")) {
+          const pct = Math.floor(p.progress || 0);
+          if (pct !== lastPct) { lastPct = pct; vecStatus.textContent = `モデルをダウンロード中… ${pct}%`; }
+        }
+      },
+    });
+    vecStatus.textContent = "スキルのREADMEをベクトルに変換しています…";
+    const passages = SKILLS.map(s => "passage: " + s.title + "。" + s.summary + "\n" + s.readme);
+    const out = await embedder(passages, {pooling:"mean", normalize:true});
+    skillVecs = out.tolist();
+    vecStatus.textContent = `有効です（${SKILLS.length}件のREADMEをベクトル化済み）。`;
+    loadVec.textContent = "有効化済み";
+    setMode();
+  } catch (e) {
+    console.error(e);
+    loadVec.disabled = false;
+    vecStatus.textContent = "読み込めませんでした。社内ネットワークで cdn.jsdelivr.net や huggingface.co への接続が制限されている可能性があります。";
+  }
+}
+loadVec.addEventListener("click", enableVectors);
+async function vectorSearch(q){
+  const out = await embedder(["query: " + q], {pooling:"mean", normalize:true});
+  const qv = out.tolist()[0];
+  const sims = skillVecs.map((v,i) => ({i, sim: v.reduce((a,x,k) => a + x*qv[k], 0)}));
+  // e5 cosine scores cluster around 0.75-0.9; stretch to 0-100 for display
+  return sims.sort((a,b) => b.sim - a.sim).slice(0,5).map(({i,sim}) => ({
+    id: SKILLS[i].id,
+    score: Math.max(0, Math.min(100, Math.round((sim - 0.70) / 0.20 * 100))),
+    reason: `入力文とREADMEの意味ベクトルの類似度 ${sim.toFixed(3)}（ベクトル検索）`,
+  })).filter((r,idx) => idx === 0 || r.score >= 20);
+}
+
+function renderHits(list, note){
+  if (!list.length) { results.innerHTML = (note ? `<p class="status err">${esc(note)}</p>` : "") + `<p class="status">近いスキルが見つかりませんでした。やりたいことを別の言い方で試してください。</p>`; return; }
+  results.innerHTML = (note ? `<p class="status err">${esc(note)}</p>` : "") + list.map((r,i) => {
+    const s = byId[r.id];
+    return `<article class="hit"><div class="rank">${i+1}</div>
+      <div class="body"><div class="t"><b>${esc(s.title)}</b>${deptTag(s.dept)}<span class="id">${s.id}</span></div>
+      <p>${esc(aiSummaries[s.id] || s.summary)}</p><p class="why">${esc(r.reason)}</p></div>
+      <div class="side"><div class="meter" aria-hidden="true"><i style="width:${r.score}%"></i></div><span class="score">関連度 ${r.score}</span><span class="opn" data-opens="${s.id}">GitHubで開かれた回数 ${opens(s.id)}</span>
+      <a class="repo gh-open" data-open="${s.id}" href="${s.url}" target="_blank" rel="noopener">GitHubで開く ↗</a>
+      <button type="button" class="repo-toggle" data-id="${s.id}" aria-expanded="false"><span class="caret">▶</span> ${s.repo}/${s.id}</button></div>
+      <div class="hit-readme" hidden><p class="readme-h">README.md</p><pre class="readme">${esc(s.readme)}</pre><a class="repo" data-open="${s.id}" href="${s.url}" target="_blank" rel="noopener">GitHubで開く ↗</a></div></article>`;
+  }).join("");
+}
+let busy = false;
+async function runSearch(q){
+  q = q.trim(); if (!q || busy) return;
+  busy = true; const go = document.getElementById("go"); go.disabled = true;
+  const e = engine();
+  results.innerHTML = `<p class="status">${e === "claude" ? "READMEを読んで関連するスキルを探しています…" : "検索しています…"}</p>`;
+  try {
+    if (e === "simple") { renderHits(localSearch(q)); return; }
+    if (e === "vector") { renderHits(await vectorSearch(q)); return; }
+    const arr = parseJsonArray(await askClaude(buildPrompt(q), 1200));
+    const list = (Array.isArray(arr) ? arr : []).filter(r => r && byId[String(r.id)])
+      .map(r => ({id:String(r.id), score:Math.max(0,Math.min(100,Math.round(Number(r.score)||0))), reason:String(r.reason||"")}))
+      .sort((a,b) => b.score - a.score).slice(0,5);
+    renderHits(list);
+  } catch (err) {
+    console.error(err);
+    const msg = e === "claude" ? apiErrMsg(err) + " 下は" + (skillVecs ? "ベクトル検索" : "簡易検索") + "の結果です。" : "検索に失敗したため、簡易検索の結果を表示しています。";
+    let fallback = localSearch(q);
+    if (e === "claude" && skillVecs) { try { fallback = await vectorSearch(q); } catch {} }
+    renderHits(fallback, msg);
+  } finally { busy = false; go.disabled = false; }
+}
+results.addEventListener("click", e => {
+  const b = e.target.closest(".repo-toggle"); if (!b) return;
+  const panel = b.closest(".hit").querySelector(".hit-readme");
+  panel.hidden = !panel.hidden; b.setAttribute("aria-expanded", String(!panel.hidden));
+});
+document.getElementById("qform").addEventListener("submit", e => { e.preventDefault(); runSearch(document.getElementById("q").value); });
+document.getElementById("examples").addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  document.getElementById("q").value = b.textContent; runSearch(b.textContent);
+});
+
+/* settings panel */
+const setBtn = document.getElementById("setBtn"), settings = document.getElementById("settings");
+const keyIn = document.getElementById("apiKey"), modelIn = document.getElementById("model");
+keyIn.value = apiKey; modelIn.value = modelId;
+setBtn.addEventListener("click", () => { settings.hidden = !settings.hidden; setBtn.setAttribute("aria-expanded", String(!settings.hidden)); });
+document.getElementById("saveKey").addEventListener("click", () => {
+  apiKey = keyIn.value.trim(); modelId = modelIn.value.trim() || "claude-haiku-4-5"; modelIn.value = modelId;
+  store.set("skillcat.apiKey", apiKey); store.set("skillcat.model", modelId);
+  setMode(); if (apiKey) { settings.hidden = true; setBtn.setAttribute("aria-expanded","false"); }
+});
+document.getElementById("clearKey").addEventListener("click", () => {
+  apiKey = ""; keyIn.value = ""; store.set("skillcat.apiKey", ""); setMode();
+});
+
+setMode();
+</script>
+</body>
+</html>

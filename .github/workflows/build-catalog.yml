@@ -1,0 +1,65 @@
+# 各部署の全社公開用リポジトリからスキル情報を集め、スキル一覧のHTMLを作り直す。
+# 動くタイミング:
+#   - 部署リポジトリのスキルが変わったとき（notify-catalog.yml からの通知）
+#   - 毎朝6時（日本時間）の定期実行。通知の取りこぼし対策
+#   - このリポジトリのひな形・スクリプト・設定を変えたとき
+#   - Actions 画面からの手動実行
+name: スキル一覧HTMLを生成
+
+on:
+  repository_dispatch:
+    types: [skills-updated]
+  schedule:
+    - cron: "0 21 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "template/**"
+      - "scripts/**"
+      - "config/**"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-catalog
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 必要なライブラリを入れる
+        run: pip install pyyaml
+
+      - name: 通知元を記録
+        if: github.event_name == 'repository_dispatch'
+        run: echo "通知元：${{ github.event.client_payload.repo }} @ ${{ github.event.client_payload.sha }}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: 全社公開用リポジトリからスキル情報を集める
+        env:
+          # 部署リポジトリが非公開なら、読み取り権限のあるトークンを CATALOG_READ_TOKEN に登録する
+          GH_TOKEN: ${{ secrets.CATALOG_READ_TOKEN || github.token }}
+        run: python scripts/collect.py --config config/departments.yml --owner "${{ github.repository_owner }}" --out data/skills.json
+
+      - name: HTMLを作る
+        run: python scripts/render.py --template template/skills-catalog.template.html --data data/skills.json --out docs/index.html
+
+      - name: 変わっていればコミットする
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add data/skills.json docs/index.html
+          if git diff --cached --quiet; then
+            echo "スキル一覧に変更はありません" | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git commit -m "スキル一覧を自動更新（${{ github.event_name }}）"
+          git push

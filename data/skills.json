@@ -1,0 +1,207 @@
+{
+ "generatedAt": "2026-10-20T09:06:23+00:00",
+ "departments": {
+  "sales": {
+   "name": "営業本部",
+   "cls": "d-sales",
+   "repo": "sales-skills-public",
+   "url": "https://github.com/SeijiDoi545/sales-skills-public"
+  },
+  "hr": {
+   "name": "人事部",
+   "cls": "d-hr",
+   "repo": "hr-skills-public",
+   "url": "https://github.com/SeijiDoi545/hr-skills-public"
+  },
+  "fin": {
+   "name": "経理部",
+   "cls": "d-fin",
+   "repo": "finance-skills-public",
+   "url": "https://github.com/SeijiDoi545/finance-skills-public"
+  },
+  "dx": {
+   "name": "DX推進部",
+   "cls": "d-dx",
+   "repo": "dx-skills-public",
+   "url": "https://github.com/SeijiDoi545/dx-skills-public"
+  }
+ },
+ "skills": [
+  {
+   "id": "competitor-brief",
+   "dept": "sales",
+   "title": "競合比較ブリーフ",
+   "summary": "指定した競合他社について、公開情報から製品・価格帯・強み弱みの比較表を作る。",
+   "summarySource": "catalog",
+   "updated": "2026-08-21",
+   "readme": "# 競合比較ブリーフ (competitor-brief)\n商談前の準備として、競合他社の製品、価格帯、導入事例、強みと弱みを1枚にまとめます。\n## できること\n- 自社製品との機能比較表を作成\n- 想定される切り返しトークを3つ提示\n- 出典URLを必ず併記\n## 注意\n- 社外秘の価格情報は入力しないでください。",
+   "repo": "sales-skills-public",
+   "url": "https://github.com/SeijiDoi545/sales-skills-public/tree/main/skills/competitor-brief"
+  },
+  {
+   "id": "meeting-minutes-crm",
+   "dept": "sales",
+   "title": "商談議事録のCRM登録",
+   "summary": "商談の録音文字起こしやメモから議事録を作り、CRMの商談記録の形式に整える。",
+   "summarySource": "catalog",
+   "updated": "2026-09-30",
+   "readme": "# 商談議事録のCRM登録 (meeting-minutes-crm)\n商談の文字起こしや手書きメモを読み取り、議事録と次回アクションを整理して、CRMの商談記録欄にそのまま貼れる形式で出力します。\n## できること\n- 参加者、決定事項、宿題、次回日程を抽出\n- 受注確度（A/B/C）の判定根拠を記載\n- 顧客が言及した競合製品をタグ付け\n## 入力\n- Teams会議の文字起こし、またはメモ\n## 出力\n- CRM項目（商談フェーズ・確度・次回アクション）に対応したテキスト",
+   "repo": "sales-skills-public",
+   "url": "https://github.com/SeijiDoi545/sales-skills-public/tree/main/skills/meeting-minutes-crm"
+  },
+  {
+   "id": "proposal-drafter",
+   "dept": "sales",
+   "title": "提案書ドラフト作成",
+   "summary": "顧客情報とヒアリングメモから、提案書の構成案と本文の下書きを作成する。",
+   "summarySource": "catalog",
+   "updated": "2026-10-08",
+   "readme": "# 提案書ドラフト作成 (proposal-drafter)\n顧客の基本情報、ヒアリングメモ、過去の類似提案をもとに、提案書の章立てと各章の本文ドラフトを作ります。\n## できること\n- 課題→解決策→効果→体制→スケジュールの標準構成で骨子を作る\n- 業界別の言い回しテンプレートを適用\n- 過去提案から再利用できる事例を3件まで提示\n## 入力\n- 顧客名、業界、ヒアリングメモ（箇条書きで可）\n## 出力\n- PowerPoint用の章立てと本文（Markdown）\n## 注意\n- 価格はドラフトに含めません。見積は quote-checker を使ってください。",
+   "repo": "sales-skills-public",
+   "url": "https://github.com/SeijiDoi545/sales-skills-public/tree/main/skills/proposal-drafter"
+  },
+  {
+   "id": "quote-checker",
+   "dept": "sales",
+   "title": "見積書チェック",
+   "summary": "見積書の値引率・支払条件・有効期限を社内基準と照合し、承認が必要な項目を指摘する。",
+   "summarySource": "catalog",
+   "updated": "2026-10-02",
+   "readme": "# 見積書チェック (quote-checker)\n作成した見積書を社内の値引き基準・取引条件ルールと照らし合わせ、上長承認が必要な箇所を一覧にします。\n## できること\n- 値引率が基準（標準15%）を超える明細を検出\n- 支払サイト、有効期限、納期の記載漏れチェック\n- 計算ミス（小計・税額）の検算\n## 入力\n- 見積書（Excel / PDF）",
+   "repo": "sales-skills-public",
+   "url": "https://github.com/SeijiDoi545/sales-skills-public/tree/main/skills/quote-checker"
+  },
+  {
+   "id": "interview-question-gen",
+   "dept": "hr",
+   "title": "面接質問の設計",
+   "summary": "求める人物像から、構造化面接の質問と評価基準のセットを作る。",
+   "summarySource": "catalog",
+   "updated": "2026-07-28",
+   "readme": "# 面接質問の設計 (interview-question-gen)\nポジションのコンピテンシーに沿って、構造化面接用の質問と評価基準（5段階）を作成します。\n## できること\n- 行動面接（過去の行動を聞く質問）と状況面接の質問を生成\n- 各質問に評価の目安を付与\n- 面接官ごとの担当質問を割り振り\n## 注意\n- 本籍・家族構成など就職差別につながる質問は生成しません。",
+   "repo": "hr-skills-public",
+   "url": "https://github.com/SeijiDoi545/hr-skills-public/tree/main/skills/interview-question-gen"
+  },
+  {
+   "id": "jd-writer",
+   "dept": "hr",
+   "title": "求人票作成",
+   "summary": "募集ポジションの要件メモから、求人媒体に掲載できる求人票の文面を作成する。",
+   "summarySource": "catalog",
+   "updated": "2026-09-12",
+   "readme": "# 求人票作成 (jd-writer)\n現場から受け取った募集要件メモをもとに、求人媒体や自社採用サイトに掲載する求人票を作ります。\n## できること\n- 仕事内容、必須・歓迎要件、待遇の標準フォーマットに整形\n- 性別・年齢など差別的に読める表現をチェックして言い換え\n- 媒体ごとの文字数制限に合わせて要約\n## 入力\n- ポジション名、配属部署、要件メモ",
+   "repo": "hr-skills-public",
+   "url": "https://github.com/SeijiDoi545/hr-skills-public/tree/main/skills/jd-writer"
+  },
+  {
+   "id": "onboarding-guide",
+   "dept": "hr",
+   "title": "入社オンボーディング案内",
+   "summary": "入社者の部署と職種に合わせて、初日から1か月の手続き・研修・案内事項の予定表を作る。",
+   "summarySource": "catalog",
+   "updated": "2026-10-05",
+   "readme": "# 入社オンボーディング案内 (onboarding-guide)\n新しく入社・異動したメンバー向けに、初日から30日間でやることを時系列の予定表にまとめます。\n## できること\n- PC受け取り、アカウント発行、社内規程の確認などの手続きを一覧化\n- 部署・職種別の必須研修を予定表に組み込み\n- 受け入れ側（上長・メンター）へのリマインド文面を作成\n## 入力\n- 入社日、配属部署、職種、雇用形態",
+   "repo": "hr-skills-public",
+   "url": "https://github.com/SeijiDoi545/hr-skills-public/tree/main/skills/onboarding-guide"
+  },
+  {
+   "id": "policy-qa",
+   "dept": "hr",
+   "title": "就業規則Q&A",
+   "summary": "就業規則や社内規程をもとに、休暇・勤怠・福利厚生などの質問に条文を示して回答する。",
+   "summarySource": "catalog",
+   "updated": "2026-06-17",
+   "readme": "# 就業規則Q&A (policy-qa)\n社員からの「有給は何日？」「在宅勤務の申請方法は？」といった質問に、就業規則・社内規程の該当条文を引用して回答します。\n## できること\n- 該当する規程名と条番号を必ず併記\n- 規程に記載がない場合は人事部の問い合わせ窓口を案内\n## 注意\n- 個別の労務判断（懲戒など）には回答しません。",
+   "repo": "hr-skills-public",
+   "url": "https://github.com/SeijiDoi545/hr-skills-public/tree/main/skills/policy-qa"
+  },
+  {
+   "id": "budget-template",
+   "dept": "fin",
+   "title": "予算申請書の整形",
+   "summary": "各部署から提出された予算申請の内容を、経理部指定の申請書フォーマットに整える。",
+   "summarySource": "catalog",
+   "updated": "2026-05-14",
+   "readme": "# 予算申請書の整形 (budget-template)\n部署ごとにばらばらな形式で届く予算申請を、経理部指定のフォーマットに変換します。\n## できること\n- 費目を経理部の勘定科目に対応づけ\n- 必須項目（目的・効果・期間）の記載漏れを指摘\n## 出力\n- 予算申請書テンプレート（Excel）",
+   "repo": "finance-skills-public",
+   "url": "https://github.com/SeijiDoi545/finance-skills-public/tree/main/skills/budget-template"
+  },
+  {
+   "id": "expense-audit",
+   "dept": "fin",
+   "title": "経費精算チェック",
+   "summary": "経費精算の申請内容と領収書を照合し、規程違反や記載不備の疑いがある申請を抽出する。",
+   "summarySource": "catalog",
+   "updated": "2026-09-25",
+   "readme": "# 経費精算チェック (expense-audit)\n月次の経費精算データと添付された領収書を照らし合わせ、差し戻し候補を一覧にします。\n## できること\n- 領収書の日付・金額と申請内容の不一致を検出\n- 交際費の上限超過、タクシー利用の理由未記載などの規程違反を指摘\n- 同じ領収書の二重申請を検出\n## 入力\n- 経費精算システムの出力CSVと領収書画像",
+   "repo": "finance-skills-public",
+   "url": "https://github.com/SeijiDoi545/finance-skills-public/tree/main/skills/expense-audit"
+  },
+  {
+   "id": "invoice-reader",
+   "dept": "fin",
+   "title": "請求書の読み取りと仕訳候補",
+   "summary": "受領した請求書PDFから取引先・金額・期日を読み取り、勘定科目付きの仕訳候補を作る。",
+   "summarySource": "catalog",
+   "updated": "2026-10-10",
+   "readme": "# 請求書の読み取りと仕訳候補 (invoice-reader)\n取引先から届いた請求書（PDF・画像）を読み取り、会計システムに取り込める形式の仕訳候補を作成します。\n## できること\n- 取引先名、請求金額、消費税、支払期日、適格請求書発行事業者の登録番号を抽出\n- 過去の仕訳から勘定科目と部門を推定\n- 登録番号の未記載や金額の不一致を警告\n## 出力\n- 会計システム取込用CSV",
+   "repo": "finance-skills-public",
+   "url": "https://github.com/SeijiDoi545/finance-skills-public/tree/main/skills/invoice-reader"
+  },
+  {
+   "id": "monthly-variance",
+   "dept": "fin",
+   "title": "月次予実差異コメント",
+   "summary": "月次の予算と実績を比較し、差異の大きい科目について経営会議向けの説明コメントを下書きする。",
+   "summarySource": "catalog",
+   "updated": "2026-10-01",
+   "readme": "# 月次予実差異コメント (monthly-variance)\n予算と実績の数値を読み込み、差異が大きい勘定科目を抽出して、要因の説明コメントを作成します。\n## できること\n- 差異率±10%以上の科目を自動抽出\n- 前年同月比も併記\n- 経営会議資料に貼れる箇条書きのコメントを作成\n## 入力\n- 予算・実績のExcel（科目×月）",
+   "repo": "finance-skills-public",
+   "url": "https://github.com/SeijiDoi545/finance-skills-public/tree/main/skills/monthly-variance"
+  },
+  {
+   "id": "doc-translator",
+   "dept": "dx",
+   "title": "社内用語集準拠の翻訳",
+   "summary": "契約書や社内文書を、社内用語集に沿った訳語で日英・英日翻訳する。",
+   "summarySource": "catalog",
+   "updated": "2026-08-30",
+   "readme": "# 社内用語集準拠の翻訳 (doc-translator)\n英語の契約書、海外拠点からの報告書、社内規程などを、社内用語集の訳語に揃えて翻訳します。\n## できること\n- 日本語⇔英語の双方向翻訳\n- 社内用語集・製品名の固定訳を適用\n- 契約書の場合、原文と訳文の対訳表で出力\n## 注意\n- 法的な解釈は法務部の確認を受けてください。",
+   "repo": "dx-skills-public",
+   "url": "https://github.com/SeijiDoi545/dx-skills-public/tree/main/skills/doc-translator"
+  },
+  {
+   "id": "excel-to-dashboard",
+   "dept": "dx",
+   "title": "Excelからダッシュボード作成",
+   "summary": "Excelの集計表を読み込み、グラフと指標カードで構成したダッシュボードを作る。",
+   "summarySource": "catalog",
+   "updated": "2026-10-12",
+   "readme": "# Excelからダッシュボード作成 (excel-to-dashboard)\n売上表や進捗管理表などのExcelを読み込み、数字の傾向がひと目でわかるダッシュボードを作成します。\n## できること\n- 列の型を判定し、推移は折れ線、構成比は棒グラフなど適切なグラフを選択\n- 重要指標（KPI）をカードで表示\n- Power BIに取り込めるデータ形式でも出力\n## 入力\n- Excel / CSV ファイル",
+   "repo": "dx-skills-public",
+   "url": "https://github.com/SeijiDoi545/dx-skills-public/tree/main/skills/excel-to-dashboard"
+  },
+  {
+   "id": "slide-maker",
+   "dept": "dx",
+   "title": "報告スライド作成",
+   "summary": "報告内容のメモから、社内テンプレートに沿った報告用スライドの構成と各ページの文章を作る。",
+   "summarySource": "catalog",
+   "updated": "2026-07-09",
+   "readme": "# 報告スライド作成 (slide-maker)\n週次報告や会議資料の内容メモから、社内テンプレートに合わせたスライドを作ります。\n## できること\n- 結論→根拠→次のアクションの順で構成\n- 1枚あたりの文字量を調整\n- 社内テンプレート（PowerPoint）に流し込み",
+   "repo": "dx-skills-public",
+   "url": "https://github.com/SeijiDoi545/dx-skills-public/tree/main/skills/slide-maker"
+  },
+  {
+   "id": "sql-helper",
+   "dept": "dx",
+   "title": "自然文からSQL作成",
+   "summary": "「先月の地域別売上を出したい」といった文章から、社内データ基盤向けのSQLを作成し内容を説明する。",
+   "summarySource": "catalog",
+   "updated": "2026-09-03",
+   "readme": "# 自然文からSQL作成 (sql-helper)\nやりたい集計を文章で伝えると、社内データ基盤のテーブル定義に沿ったSQLを作り、何をしているかを説明します。\n## できること\n- テーブル定義書を参照してJOIN条件を補完\n- 実行前に対象行数の目安を提示\n- SELECT文のみ生成（更新系SQLは作りません）",
+   "repo": "dx-skills-public",
+   "url": "https://github.com/SeijiDoi545/dx-skills-public/tree/main/skills/sql-helper"
+  }
+ ]
+}

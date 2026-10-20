@@ -1,0 +1,22 @@
+# 一覧に載せる部署と、その全社公開用リポジトリ
+# - 部署内公開用リポジトリ（*-skills-internal）はここに書かないので、一覧にも検索にも出ません。
+# - owner を省略すると、ワークフローを動かしているリポジトリの持ち主（--owner）を使います。
+# - color はHTML側の色クラス（d-sales / d-hr / d-fin / d-dx）です。
+branch: main
+departments:
+  - key: sales
+    name: 営業本部
+    repo: sales-skills-public
+    color: d-sales
+  - key: hr
+    name: 人事部
+    repo: hr-skills-public
+    color: d-hr
+  - key: fin
+    name: 経理部
+    repo: finance-skills-public
+    color: d-fin
+  - key: dx
+    name: DX推進部
+    repo: dx-skills-public
+    color: d-dx
