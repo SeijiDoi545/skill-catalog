@@ -6,6 +6,7 @@
   タイトルと概要はリポジトリ直下の catalog.yml（人手で記載）を優先し、
   書かれていなければ README の見出しと最初の段落から作る。
   更新日は skills/<スキルID>/ を最後に変更したコミットの日付。
+  変更回数は skills/<スキルID>/ に入ったコミットの数（最初の追加も1回と数える）。
 
 使い方:
   # GitHub から集める（Actions ではこちら）
@@ -38,7 +39,7 @@ class GitHubSource:
         self.owner, self.repo, self.branch = owner, repo, branch
         self.token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
 
-    def _get(self, path, raw=False):
+    def _get(self, path, raw=False, with_headers=False):
         req = urllib.request.Request(f"{API}{path}")
         req.add_header("Accept", "application/vnd.github.raw+json" if raw else "application/vnd.github+json")
         req.add_header("X-GitHub-Api-Version", "2022-11-28")
@@ -46,12 +47,13 @@ class GitHubSource:
             req.add_header("Authorization", f"Bearer {self.token}")
         try:
             with urllib.request.urlopen(req, timeout=30) as r:
-                body = r.read()
+                body, headers = r.read(), r.headers
         except urllib.error.HTTPError as e:
             if e.code == 404:
-                return None
+                return (None, {}) if with_headers else None
             raise RuntimeError(f"GitHub API {path} -> HTTP {e.code}: {e.read()[:300]!r}") from e
-        return body.decode("utf-8") if raw else json.loads(body)
+        data = body.decode("utf-8") if raw else json.loads(body)
+        return (data, headers) if with_headers else data
 
     def _repo_path(self, rest):
         return f"/repos/{self.owner}/{self.repo}{rest}"
@@ -71,14 +73,18 @@ class GitHubSource:
         q = urllib.parse.quote(path)
         return self._get(self._repo_path(f"/contents/{q}?ref={urllib.parse.quote(self.branch)}"), raw=True)
 
-    def last_updated(self, path):
+    def history(self, path):
+        """(最終更新日, コミット数) を返す。1件ずつ取得し、Link ヘッダーの最終ページ番号を件数として使う"""
         q = urllib.parse.urlencode({"path": path, "sha": self.branch, "per_page": 1})
-        commits = self._get(self._repo_path(f"/commits?{q}")) or []
+        commits, headers = self._get(self._repo_path(f"/commits?{q}"), with_headers=True)
+        commits = commits or []
         if not commits:
-            return ""
+            return "", 0
+        m = re.search(r'[?&]page=(\d+)[^>]*>;\s*rel="last"', headers.get("Link", "") or "")
+        count = int(m.group(1)) if m else len(commits)
         # GitHub は UTC で返すので、日本時間の日付にそろえる
         when = dt.datetime.fromisoformat(commits[0]["commit"]["committer"]["date"].replace("Z", "+00:00"))
-        return when.astimezone(dt.timezone(dt.timedelta(hours=9))).date().isoformat()
+        return when.astimezone(dt.timezone(dt.timedelta(hours=9))).date().isoformat(), count
 
 
 class LocalSource:
@@ -96,13 +102,14 @@ class LocalSource:
         p = self.dir / path
         return p.read_text(encoding="utf-8") if p.is_file() else None
 
-    def last_updated(self, path):
+    def history(self, path):
+        def git(*args):
+            return subprocess.run(["git", "-C", str(self.dir), *args, "--", path],
+                                  capture_output=True, text=True, check=True).stdout.strip()
         try:
-            out = subprocess.run(["git", "-C", str(self.dir), "log", "-1", "--format=%cs", "--", path],
-                                 capture_output=True, text=True, check=True).stdout.strip()
-            return out
-        except (subprocess.CalledProcessError, FileNotFoundError):
-            return ""
+            return git("log", "-1", "--format=%cs"), int(git("rev-list", "--count", "HEAD") or 0)
+        except (subprocess.CalledProcessError, FileNotFoundError, ValueError):
+            return "", 0
 
 
 # ---------------------------------------------------------------- parsing
@@ -143,13 +150,15 @@ def collect_department(dept, source, owner, branch):
         if info.get("hidden"):
             continue
         readme = source.read(path) or ""
+        updated, changes = source.history(f"skills/{sid}")
         skills.append({
             "id": sid,
             "dept": dept["key"],
             "title": str(info.get("title") or title_from_readme(readme, sid)),
             "summary": str(info.get("summary") or summary_from_readme(readme)),
             "summarySource": "catalog" if info.get("summary") else "readme",
-            "updated": source.last_updated(f"skills/{sid}"),
+            "updated": updated,
+            "changes": changes,
             "readme": readme.strip(),
             "repo": dept["repo"],
             "url": f"https://github.com/{owner}/{dept['repo']}/tree/{branch}/skills/{sid}",
@@ -161,7 +170,7 @@ def collect_department(dept, source, owner, branch):
 def diff_summary(old, new):
     o = {f"{s['dept']}/{s['id']}": s for s in (old or {}).get("skills", [])}
     n = {f"{s['dept']}/{s['id']}": s for s in new["skills"]}
-    keys = ("title", "summary", "readme", "updated")
+    keys = ("title", "summary", "readme", "updated", "changes")
     added = sorted(set(n) - set(o))
     removed = sorted(set(o) - set(n))
     changed = sorted(k for k in set(n) & set(o) if any(n[k].get(f) != o[k].get(f) for f in keys))
