@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-20T09:06:23+00:00",
+ "generatedAt": "2026-10-20T10:22:36+00:00",
  "departments": {
   "sales": {
    "name": "営業本部",
@@ -174,7 +174,7 @@
    "id": "excel-to-dashboard",
    "dept": "dx",
    "title": "Excelからダッシュボード作成",
-   "summary": "Excelの集計表を読み込み、グラフと指標カードで構成したダッシュボードを作る。",
+   "summary": "Excelの集計表を読み込み、グラフと指標カードで構成したダッシュボードを作る。（自動更新テスト）",
    "summarySource": "catalog",
    "updated": "2026-10-12",
    "readme": "# Excelからダッシュボード作成 (excel-to-dashboard)\n売上表や進捗管理表などのExcelを読み込み、数字の傾向がひと目でわかるダッシュボードを作成します。\n## できること\n- 列の型を判定し、推移は折れ線、構成比は棒グラフなど適切なグラフを選択\n- 重要指標（KPI）をカードで表示\n- Power BIに取り込めるデータ形式でも出力\n## 入力\n- Excel / CSV ファイル",
