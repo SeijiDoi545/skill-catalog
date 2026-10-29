@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-29T02:22:45+00:00",
+ "generatedAt": "2026-10-29T02:42:53+00:00",
  "departments": {
   "sales": {
    "name": "営業本部",
@@ -175,7 +175,7 @@
    "id": "doc-translator",
    "dept": "dx",
    "title": "社内用語集準拠の翻訳",
-   "summary": "契約書や社内文書を、社内用語集に沿った訳語で日英・英日翻訳する。",
+   "summary": "契約書や社内文書を、社内用語集に沿った訳語で日英・英日翻訳する。(自動更新テスト20261029)",
    "summarySource": "catalog",
    "updated": "2026-10-29",
    "changes": 3,
